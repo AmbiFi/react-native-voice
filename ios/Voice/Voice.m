@@ -29,22 +29,22 @@
 
 /** Returns "YES" if no errors had occurred */
 -(BOOL) setupAudioSession {
-    if ([self isHeadsetPluggedIn] || [self isHeadSetBluetooth]){
-        [self.audioSession setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionAllowBluetooth error: nil];
-    }
-    else {
-        [self.audioSession setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker error: nil];
-    }
-    
-    NSError* audioSessionError = nil;
-    
-    // Activate the audio session
-    [self.audioSession setActive:YES withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&audioSessionError];
-    
-    if (audioSessionError != nil) {
-        [self sendResult:@{@"code": @"audio", @"message": [audioSessionError localizedDescription]} :nil :nil :nil];
-        return NO;
-    }
+//    if ([self isHeadsetPluggedIn] || [self isHeadSetBluetooth]){
+//        [self.audioSession setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionAllowBluetooth error: nil];
+//    }
+//    else {
+//        [self.audioSession setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker error: nil];
+//    }
+//    
+//    NSError* audioSessionError = nil;
+//    
+//    // Activate the audio session
+//    [self.audioSession setActive:YES withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&audioSessionError];
+//    
+//    if (audioSessionError != nil) {
+//        [self sendResult:@{@"code": @"audio", @"message": [audioSessionError localizedDescription]} :nil :nil :nil];
+//        return NO;
+//    }
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teardown) name:RCTBridgeWillReloadNotification object:nil];
     
@@ -76,24 +76,24 @@
     self.isTearingDown = YES;
     [self.recognitionTask cancel];
     self.recognitionTask = nil;
-    
-    // Set back audio session category
+//
+//    // Set back audio session category
     [self resetAudioSession];
-    
-    // End recognition request
-    [self.recognitionRequest endAudio];
-    
-    // Remove tap on bus
-    [self.audioEngine.inputNode removeTapOnBus:0];
-    [self.audioEngine.inputNode reset];
-    
-    // Stop audio engine and dereference it for re-allocation
-    if (self.audioEngine.isRunning) {
-        [self.audioEngine stop];
-        [self.audioEngine reset];
+//
+//    // End recognition request
+//    [self.recognitionRequest endAudio];
+//
+//    // Remove tap on bus
+//    [self.audioEngine.inputNode removeTapOnBus:0];
+//    [self.audioEngine.inputNode reset];
+//
+//    // Stop audio engine and dereference it for re-allocation
+//    if (self.audioEngine.isRunning) {
+//        [self.audioEngine stop];
+//        [self.audioEngine reset];
         self.audioEngine = nil;
-    }
-    
+//    }
+//
     self.recognitionRequest = nil;
     self.sessionId = nil;
     self.isTearingDown = NO;
@@ -105,15 +105,15 @@
     }
     // Set audio session to inactive and notify other sessions
     // [self.audioSession setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error: nil];
-    NSString* audioCategory = [self.audioSession category];
-    // Category hasn't changed -- do nothing
-    if ([self.priorAudioCategory isEqualToString:audioCategory]) return;
-    // Reset back to the previous category
-    if ([self isHeadsetPluggedIn] || [self isHeadSetBluetooth]) {
-        [self.audioSession setCategory:self.priorAudioCategory withOptions:AVAudioSessionCategoryOptionAllowBluetooth error: nil];
-    } else {
-        [self.audioSession setCategory:self.priorAudioCategory withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker error: nil];
-    }
+//    NSString* audioCategory = [self.audioSession category];
+//    // Category hasn't changed -- do nothing
+//    if ([self.priorAudioCategory isEqualToString:audioCategory]) return;
+//    // Reset back to the previous category
+//    if ([self isHeadsetPluggedIn] || [self isHeadSetBluetooth]) {
+//        [self.audioSession setCategory:self.priorAudioCategory withOptions:AVAudioSessionCategoryOptionAllowBluetooth error: nil];
+//    } else {
+//        [self.audioSession setCategory:self.priorAudioCategory withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker error: nil];
+//    }
     // Remove pointer reference
     self.audioSession = nil;
 }
